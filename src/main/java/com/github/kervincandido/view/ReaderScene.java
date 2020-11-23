@@ -24,18 +24,12 @@ public class ReaderScene {
 
     }
 
-    private void loadFromDir(File dir) {
+    private Stream<File> loadFromDir(File dir) {
         final FileFilter fileFilter = file -> file.getName().matches("^[0-9]+.*") &&
                             (file.getName().endsWith(".jpg") || file.getName().endsWith(".png"));
         final File[] files = dir.listFiles(fileFilter);
 
-        if(files == null) return;
-
-        Stream.of(files)
-                .sorted(File::compareTo)
-                .map(file -> new Image(file.toURI().toString()))
-                .map(ImageView::new)
-                .forEach(imageView -> Platform.runLater(() -> imageList.getChildren().add(imageView)));
+        return files == null ? Stream.of() : Stream.of(files);
     }
 
     @FXML
@@ -46,8 +40,16 @@ public class ReaderScene {
         DirectoryChooser fileChooser = new DirectoryChooser();
         final File dir = fileChooser.showDialog(window);
         if (dir != null) {
-            loadFromDir(dir);
+            final Stream<File> images = loadFromDir(dir);
+            showImages(images);
         }
+    }
+
+    private void showImages(Stream<File> images) {
+        images.sorted(File::compareTo)
+                .map(file -> new Image(file.toURI().toString()))
+                .map(ImageView::new)
+                .forEach(imageView -> Platform.runLater(() -> imageList.getChildren().add(imageView)));
     }
 
     @FXML
