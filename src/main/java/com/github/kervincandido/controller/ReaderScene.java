@@ -1,4 +1,4 @@
-package com.github.kervincandido.view;
+package com.github.kervincandido.controller;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -41,6 +41,7 @@ public class ReaderScene {
         final File dir = fileChooser.showDialog(window);
         if (dir != null) {
             final Stream<File> images = loadFromDir(dir);
+            clear();
             showImages(images);
         }
     }
@@ -50,6 +51,10 @@ public class ReaderScene {
                 .map(file -> new Image(file.toURI().toString()))
                 .map(ImageView::new)
                 .forEach(imageView -> Platform.runLater(() -> imageList.getChildren().add(imageView)));
+    }
+    
+    private void clear() {
+        Platform.runLater(() -> imageList.getChildren().clear());
     }
 
     @FXML
