@@ -1,0 +1,45 @@
+.menu-bar, .menu-bar .menu-item, .menu-bar .context-menu {
+    -fx-background-color: #323232;
+}
+
+.menu-bar .menu, .menu-item .label, .menu-bar .menu .label {
+    -fx-text-fill: #f5f6fa;
+}
+
+.menu-button:hover, .menu-bar .menu .menu-item:hover {
+    -fx-background-color: #26de81;
+}
+
+.menu-bar .menu-button:hover .label {
+    -fx-text-fill: #000000;
+}
+
+.menu-bar .menu:showing {
+    -fx-background-color: #26de81;
+}
+
+.menu-bar .menu:showing .label {
+    -fx-text-fill: #f5f6fa;
+}
+
+.menu-bar .menu:showing > .label {
+    -fx-text-fill: #000000;
+}
+
+.menu-bar .menu .menu-item:hover > .label {
+    -fx-text-fill: #000000;
+}
+
+.list-view {
+    -fx-background-color: #323232;
+}
+
+.list-view .list-cell {
+    -fx-alignment: center;
+    -fx-background-color: #323232;
+    -fx-padding: 0px;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: #323232;
+}
