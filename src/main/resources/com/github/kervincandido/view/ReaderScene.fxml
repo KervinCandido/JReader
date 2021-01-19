@@ -9,7 +9,8 @@
         <menus>
           <Menu mnemonicParsing="false" text="Arquivo">
             <items>
-                  <MenuItem mnemonicParsing="false" onAction="#load" text="Carregar" />
+                  <MenuItem mnemonicParsing="false" onAction="#loadFolder" text="Carregar pasta" />
+                  <MenuItem mnemonicParsing="false" onAction="#loadCompressedFile" text="Carregar arquivo comprimido" />
               <MenuItem mnemonicParsing="false" onAction="#close" text="Sair" />
             </items>
           </Menu>

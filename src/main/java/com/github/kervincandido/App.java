@@ -12,19 +12,19 @@ import java.io.IOException;
  */
 public class App extends Application {
 
-    private static Scene scene;
-
     @Override
-    public void start(Stage stage) throws IOException {
-        final var resource = getClass().getResource("view/ReaderScene.fxml");
-        scene = new Scene(FXMLLoader.load(resource));
-        stage.setScene(scene);
-        stage.setMaximized(true);
-        stage.show();
-    }
-
-    public static Scene getScene() {
-        return scene;
+    public void start(Stage stage) {
+        try {
+            final var resource = getClass().getResource("view/ReaderScene.fxml");
+            Scene scene = new Scene(FXMLLoader.load(resource));
+            stage.setScene(scene);
+            stage.setMaximized(true);
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Falha ao carregar a UI");
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
