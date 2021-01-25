@@ -1,4 +1,4 @@
-package com.github.kervincandido.model;
+package com.github.kervincandido.model.listener;
 
 @FunctionalInterface
 public interface AfterExtractionListener {

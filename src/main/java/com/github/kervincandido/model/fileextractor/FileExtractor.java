@@ -1,4 +1,6 @@
-package com.github.kervincandido.model;
+package com.github.kervincandido.model.fileextractor;
+
+import com.github.kervincandido.model.listener.AfterExtractionListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +12,6 @@ public abstract class FileExtractor {
     protected abstract String getCommand();
 
     private final List<AfterExtractionListener> afterExtractionListeners = new ArrayList<>();
-
     public void extract(File archive, File destinationFolder) throws IOException {
         final Process process = Runtime.getRuntime().exec(createFullCommand(archive, destinationFolder));
         process.onExit().thenRun(()-> afterExtractionListeners.forEach(AfterExtractionListener::onAfterExtraction));

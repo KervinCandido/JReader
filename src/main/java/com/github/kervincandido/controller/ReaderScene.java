@@ -1,8 +1,9 @@
 package com.github.kervincandido.controller;
 
-import com.github.kervincandido.model.FileExtractor;
-import com.github.kervincandido.model.FileExtractorFactory;
 import com.github.kervincandido.model.OS;
+import com.github.kervincandido.model.fileextractor.FileExtractor;
+import com.github.kervincandido.model.fileextractor.FileExtractorFactory;
+import com.github.kervincandido.model.filemanager.FileManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,7 +42,7 @@ public class ReaderScene {
         final File dir = fileChooser.showDialog(parent);
         if (dir != null) {
             final Stream<File> images = loadFromDir(dir);
-            showImages(images, (window.getWidth() * 95) / 100);
+            showImages(images, getPageWidth(window));
         }
     }
 
@@ -54,21 +55,18 @@ public class ReaderScene {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter(".rar", "rar"));
         final File dir = fileChooser.showOpenDialog(parent);
-        if (dir != null) {
-            final String[] nameSplitted = dir.getName().split("\\.");
-            String fileUncompressed = Arrays.stream(nameSplitted)
-                    .limit(nameSplitted.length - 1)
-                    .collect(Collectors.joining("."));
 
-            final File destinationFolder = new File("/tmp");
+        if (dir != null) {
+            String fileUncompressed = getFileUncompressedName(dir);
+
+            FileManager fileManager = new FileManager();
+            final File destinationFolder = fileManager.getJreaderFolder();
+            final File filesDir = new File(destinationFolder.toString() + "/" + fileUncompressed);
 
             final FileExtractor fileExtractor = FileExtractorFactory.getFileExtractor(OS.getInstance());
             try {
-                fileExtractor.addAfterExtraction(() -> {
-                    final Stream<File> images = loadFromDir(new File("/tmp/" + fileUncompressed));
-                    showImages(images, (window.getWidth() * 95) / 100);
-                });
-                fileExtractor.extract(dir,destinationFolder);
+                fileExtractor.addAfterExtraction(() -> loadAndShowPages(window, filesDir));
+                fileExtractor.extract(dir, destinationFolder);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -83,12 +81,29 @@ public class ReaderScene {
         });
     }
 
+    private String getFileUncompressedName(File dir) {
+        final String[] nameSplitted = dir.getName().split("\\.");
+        return Arrays.stream(nameSplitted)
+                .limit(nameSplitted.length - 1)
+                .collect(Collectors.joining("."));
+    }
+
+    private double getPageWidth(Window window) {
+        return (window.getWidth() * 98) / 100;
+    }
+
     private Stream<File> loadFromDir(File dir) {
         final FileFilter fileFilter = file -> file.getName().matches("^[0-9]+.*") &&
                 (file.getName().endsWith(".jpg") || file.getName().endsWith(".png"));
         final File[] files = dir.listFiles(fileFilter);
 
         return files == null ? Stream.of() : Stream.of(files);
+    }
+
+    private void loadAndShowPages(Window window, File filesDir) {
+        final Stream<File> images = loadFromDir(filesDir);
+        final double width = getPageWidth(window);
+        showImages(images, width);
     }
 
     private void showImages(Stream<File> images, double width) {

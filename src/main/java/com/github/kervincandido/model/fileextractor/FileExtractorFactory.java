@@ -1,4 +1,6 @@
-package com.github.kervincandido.model;
+package com.github.kervincandido.model.fileextractor;
+
+import com.github.kervincandido.model.OS;
 
 public class FileExtractorFactory {
 
