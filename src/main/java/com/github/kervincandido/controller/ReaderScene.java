@@ -5,6 +5,7 @@ import com.github.kervincandido.model.fileextractor.FileExtractor;
 import com.github.kervincandido.model.fileextractor.FileExtractorFactory;
 import com.github.kervincandido.model.filemanager.FileManager;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
@@ -63,10 +64,15 @@ public class ReaderScene {
             final File destinationFolder = fileManager.getJreaderFolder();
             final File filesDir = new File(destinationFolder.toString() + "/" + fileUncompressed);
 
-            final FileExtractor fileExtractor = FileExtractorFactory.getFileExtractor(OS.getInstance());
             try {
-                fileExtractor.addAfterExtraction(() -> loadAndShowPages(window, filesDir));
-                fileExtractor.extract(dir, destinationFolder);
+                if (filesDir.exists()) {
+                    System.out.println("ARQUIVOS JA EXTRAIDOS ANTERIOMENTE");
+                    loadAndShowPages(window, filesDir);
+                } else {
+                    final FileExtractor fileExtractor = FileExtractorFactory.getFileExtractor(OS.getInstance());
+                    fileExtractor.addAfterExtraction(() -> loadAndShowPages(window, filesDir));
+                    fileExtractor.extract(dir, destinationFolder);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -107,6 +113,9 @@ public class ReaderScene {
     }
 
     private void showImages(Stream<File> images, double width) {
+        final ObservableList<ImageView> items = listView.getItems();
+
+        Platform.runLater(() -> items.clear());
         images.sorted(File::compareTo)
                 .map(file -> new Image(file.toURI().toString()))
                 .map(img -> {
@@ -115,9 +124,7 @@ public class ReaderScene {
                     imageView.setFitWidth(width);
                     return imageView;
                 })
-                .forEach(imageView -> listView.getItems().add(imageView));
-
-        Platform.runLater(() -> listView.refresh());
+                .forEach(image -> Platform.runLater(() -> items.add(image)));
     }
 
 }

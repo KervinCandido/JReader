@@ -4,6 +4,6 @@ public class FileExtractorMac extends FileExtractor {
 
     @Override
     protected String getCommand() {
-        return "unrar x -f";
+        return "unrar x";
     }
 }
